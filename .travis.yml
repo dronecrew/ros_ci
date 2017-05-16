@@ -19,17 +19,17 @@ install:
   #- pip install /tmp/ros_buildfarm
   # checkout catkin for catkin_test_results script
   - git clone https://github.com/ros/catkin /tmp/catkin
-  # run devel job for a ROS repository with the same name as this repo
+  # run prerelease job for a ROS repository with the same name as this repo
   - export REPOSITORY_NAME=`basename $TRAVIS_BUILD_DIR`
   # use the code already checked out by Travis
   - mkdir -p $JOB_PATH/catkin_workspace/src
   - cp -R $TRAVIS_BUILD_DIR $JOB_PATH/catkin_workspace/src/
-  # generate the script to run a devel job for that target and repo
-  - generate_devel_script.py https://raw.githubusercontent.com/ros-infrastructure/ros_buildfarm_config/production/index.yaml $ROS_DISTRO_NAME default $REPOSITORY_NAME $OS_NAME $OS_CODE_NAME $ARCH > $JOB_PATH/devel_job.sh
+  # generate the script to run a prerelease job for that target and repo
+  - generate_prerelease_script.py https://raw.githubusercontent.com/ros-infrastructure/ros_buildfarm_config/production/index.yaml $ROS_DISTRO_NAME default $REPOSITORY_NAME $OS_NAME $OS_CODE_NAME $ARCH --custom-repo ros_ci:git:https://github.com/dronecrew/ros_ci.git:master > $JOB_PATH/prerelease_job.sh
   - cd $JOB_PATH
-  - cat devel_job.sh
+  - cat prerelease_job.sh
   # run the actual job which involves Docker
-  - sh devel_job.sh -y
+  - sh prerelease_job.sh -y
 script:
   # get summary of test results
   - /tmp/catkin/bin/catkin_test_results $JOB_PATH/catkin_workspace/test_results --all
