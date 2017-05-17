@@ -23,6 +23,8 @@ install:
 
 before_script:
   - echo ROS_CI_COVERAGE >> .ci_config/industrial_ci/src/docker.env
+  - echo COVERALLS_REPO_TOKEN >> .ci_config/industrial_ci/src/docker.env
+  - echo TRAVIS_JOB_ID >> .ci_config/industrial_ci/src/docker.env
   
 script: 
   - source .ci_config/travis.sh
