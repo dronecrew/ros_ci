@@ -11,11 +11,9 @@ notifications:
 #      - jane@doe
 env:
   global:
-    - VERBOSE_OUTPUT='true'
-    - BEFORE_SCRIPT='echo before script, dir:$(pwd)'
-    - AFTER_SCRIPT='echo after script, dir:$(pwd) && make coveralls'
+    - VERBOSE_OUTPUT=true
   matrix:
-    - COVERAGE=true USE_DEB=true ROS_DISTRO="kinetic" ROS_REPOSITORY_PATH=http://packages.ros.org/ros/ubuntu
+    - ROS_CI_COVERAGE=true USE_DEB=true ROS_DISTRO="kinetic" ROS_REPOSITORY_PATH=http://packages.ros.org/ros/ubuntu AFTER_SCRIPT='cd /root/catkin_ws/build/ros_ci && make coveralls'
     #- USE_DEB=true  ROS_DISTRO="kinetic"   ROS_REPOSITORY_PATH=http://packages.ros.org/ros-shadow-fixed/ubuntu
 matrix:
   allow_failures:
