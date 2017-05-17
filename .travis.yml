@@ -10,8 +10,10 @@ notifications:
 #    recipients:
 #      - jane@doe
 env:
+  global:
+    - VERBOSE_OUTPUT='true'
   matrix:
-    - COVERAGE=true USE_DEB=true ROS_DISTRO="kinetic" ROS_REPOSITORY_PATH=http://packages.ros.org/ros/ubuntu
+    - COVERAGE=true AFTER_SCRIPT='make coveralls' USE_DEB=true ROS_DISTRO="kinetic" ROS_REPOSITORY_PATH=http://packages.ros.org/ros/ubuntu
     #- USE_DEB=true  ROS_DISTRO="kinetic"   ROS_REPOSITORY_PATH=http://packages.ros.org/ros-shadow-fixed/ubuntu
 matrix:
   allow_failures:
@@ -20,6 +22,6 @@ install:
   - git clone https://github.com/ros-industrial/industrial_ci.git .ci_config
 script: 
   - source .ci_config/travis.sh
-  - cd /root/catkin_ws/build/ros_ci/ && make coveralls
 #  - source ./travis.sh  # Enable this when you have a package-local script 
 
+#  vim: set et fenc=utf-8 ff=unix sts=0 sw=2 ts=2 : 
