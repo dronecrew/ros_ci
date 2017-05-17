@@ -1,0 +1,5 @@
+<launch>
+  <param name="string"  value="mystring" />
+  <test test-name="mynode" pkg="ros_ci" type="test_mynode" />
+</launch>
+<!-- vim: set noet fenc= ft=xml ff=unix sts=0 sw=2 ts=2 : -->

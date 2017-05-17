@@ -1,0 +1,12 @@
+<launch>
+  <node name="talker" pkg="ros_ci" type="talker" />
+
+  <test test-name="talker_hz" pkg="rostest" type="hztest" name="talker_hz">
+		<param name="topic" value="chatter" />  
+		<param name="hz" value="10.0" />
+		<param name="hzerror" value="0.5" />
+		<param name="test_duration" value="5.0" />    
+	</test>
+</launch>
+<!-- vim: set noet fenc= ft=xml ff=unix sts=0 sw=2 ts=2 : -->
+

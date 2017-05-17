@@ -1,13 +1,25 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(ros_ci)
 
+set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
+
+# Coveralls support
+option(ROS_CI_COVERALLS "Turn on coveralls support" ON)
+option(ROS_CI_COVERALLS_UPLOAD "Upload the generated coveralls json" ON)
+if(ROS_CI_COVERALLS)
+  include(Coveralls)
+  coveralls_turn_on_coverage()
+  message(STATUS "coveralls on")
+endif()
+
 ## Add support for C++11, supported in ROS Kinetic and newer
 # add_definitions(-std=c++11)
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
-find_package(catkin REQUIRED)
+find_package(catkin REQUIRED COMPONENTS roscpp)
+find_package(rostest REQUIRED)
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
@@ -98,11 +110,17 @@ find_package(catkin REQUIRED)
 ## LIBRARIES: libraries you create in this project that dependent projects also need
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
+#catkin_package(
+  #INCLUDE_DIRS include
+  #LIBRARIES ros_ci
+  #CATKIN_DEPENDS
+  #DEPENDS system_lib
+#)
 catkin_package(
-#  INCLUDE_DIRS include
-#  LIBRARIES ros_ci
-#  CATKIN_DEPENDS other_catkin_pkg
-#  DEPENDS system_lib
+  INCLUDE_DIRS include
+  #LIBRARIES ros_ci
+  #CATKIN_DEPENDS pkg
+  #DEPENDS system_lib
 )
 
 ###########
@@ -112,6 +130,8 @@ catkin_package(
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
 # include_directories(include)
+include_directories(${catkin_INCLUDE_DIRS})
+link_libraries(${catkin_LIBRARIES})
 
 ## Declare a C++ library
 # add_library(${PROJECT_NAME}
@@ -127,6 +147,10 @@ catkin_package(
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
 # add_executable(${PROJECT_NAME}_node src/ros_ci_node.cpp)
+
+add_executable(talker src/talker.cpp)
+
+add_executable(listener src/listener.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -164,6 +188,12 @@ catkin_package(
 #   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 # )
 
+install(TARGETS listener talker
+  ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
+
 ## Mark cpp header files for installation
 # install(DIRECTORY include/${PROJECT_NAME}/
 #   DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
@@ -183,10 +213,23 @@ catkin_package(
 #############
 
 ## Add gtest based cpp test target and link libraries
-# catkin_add_gtest(${PROJECT_NAME}-test test/test_ros_ci.cpp)
-# if(TARGET ${PROJECT_NAME}-test)
-#   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
-# endif()
+if (CATKIN_ENABLE_TESTING)
+  find_package(rostest REQUIRED)
+  add_rostest_gtest(test_mynode test/mynode.test test/test_mynode.cpp)
+  #target_link_libraries(test_mynode ros_ci)
+  add_rostest(test/talker_hz.test DEPENDENCIES talker)
+endif()
+
+if (ROS_CI_COVERALLS)
+  set(COV_FILES)
+  file(GLOB_RECURSE SRCS ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp)
+  list(APPEND COV_FILES ${SRCS})
+  file(GLOB_RECURSE HDRS ${CMAKE_CURRENT_SOURCE_DIR}/include/*.h)
+  list(APPEND COV_FILES ${HDRS})
+  coveralls_setup("${COV_FILES}" ${ROS_CI_COVERALLS_UPLOAD})
+endif()
 
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
+
+# vim: set et fenc=utf-8 ff=unix sts=0 sw=2 ts=2 :

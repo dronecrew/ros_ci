@@ -1,0 +1,5 @@
+<launch>
+  <node name="listener" pkg="ros_ci" type="listener" />
+</launch>
+<!-- vim: set noet fenc= ft=xml ff=unix sts=0 sw=2 ts=2 : -->
+
