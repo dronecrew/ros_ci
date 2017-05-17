@@ -12,6 +12,7 @@ notifications:
 env:
   global:
     - VERBOSE_OUTPUT=true
+    - ROS_CI_COVERAGE=true
   matrix:
     - ROS_CI_COVERAGE=true USE_DEB=true ROS_DISTRO="kinetic" ROS_REPOSITORY_PATH=http://packages.ros.org/ros/ubuntu AFTER_SCRIPT='cd /root/catkin_ws/build/ros_ci && make coveralls'
     #- USE_DEB=true  ROS_DISTRO="kinetic"   ROS_REPOSITORY_PATH=http://packages.ros.org/ros-shadow-fixed/ubuntu
