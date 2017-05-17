@@ -122,12 +122,7 @@ find_package(catkin REQUIRED COMPONENTS roscpp)
   #CATKIN_DEPENDS
   #DEPENDS system_lib
 #)
-catkin_package(
-  INCLUDE_DIRS include
-  #LIBRARIES ros_ci
-  #CATKIN_DEPENDS pkg
-  #DEPENDS system_lib
-)
+catkin_package()
 
 ###########
 ## Build ##
