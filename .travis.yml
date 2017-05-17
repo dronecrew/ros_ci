@@ -12,7 +12,6 @@ notifications:
 env:
   global:
     - VERBOSE_OUTPUT=true
-    - ROS_CI_COVERAGE=true
   matrix:
     - ROS_CI_COVERAGE=true USE_DEB=true ROS_DISTRO="kinetic" ROS_REPOSITORY_PATH=http://packages.ros.org/ros/ubuntu AFTER_SCRIPT='cd /root/catkin_ws/build/ros_ci && make coveralls'
     #- USE_DEB=true  ROS_DISTRO="kinetic"   ROS_REPOSITORY_PATH=http://packages.ros.org/ros-shadow-fixed/ubuntu
@@ -21,6 +20,10 @@ matrix:
     #- env: USE_DEB=true  ROS_DISTRO="kinetic"   ROS_REPOSITORY_PATH=http://packages.ros.org/ros-shadow-fixed/ubuntu
 install:
   - git clone https://github.com/ros-industrial/industrial_ci.git .ci_config
+
+before_script:
+  - echo ROS_CI_COVERAGE >> .ci_config/industrial_ci/src/docker.env
+  
 script: 
   - source .ci_config/travis.sh
 #  - source ./travis.sh  # Enable this when you have a package-local script 
