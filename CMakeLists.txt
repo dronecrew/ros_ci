@@ -4,8 +4,15 @@ project(ros_ci)
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
 # Coveralls support
-option(ROS_CI_COVERALLS "Turn on coveralls support" ON)
-option(ROS_CI_COVERALLS_UPLOAD "Upload the generated coveralls json" ON)
+option(ROS_CI_COVERALLS "Turn on coveralls support" OFF)
+option(ROS_CI_COVERALLS_UPLOAD "Upload the generated coveralls json" OFF)
+
+if($ENV{ROS_CI_COVERAGE})
+  set(CMAKE_BUILD_TYPE Debug)
+  set(ROS_CI_COVERALLS ON)
+  set(ROS_CI_COVERALLS_UPLOAD ON)
+endif()
+
 if(ROS_CI_COVERALLS)
   include(Coveralls)
   coveralls_turn_on_coverage()
